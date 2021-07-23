@@ -16,6 +16,6 @@ export default [
     {path: '/orgInfo', name: 'OrgInfo', component: OrgInfo, meta : {requiresAuth: true}},
     {path: '/groups', component: Groups, meta: {requiresAuth: true}},
     {path: '/feed', name: 'feed', component: Feed, meta : {requiresAuth: true}},
-    {path: '/chats', name: 'Chats', component: Chats},
-    {path:'/findUsers', name: 'FindUsers', component: FindUsers}
+    {path: '/chats', name: 'Chats', component: Chats,  meta : {requiresAuth: true}},
+    {path:'/findUsers', name: 'FindUsers', component: FindUsers,  meta : {requiresAuth: true}}
 ]
