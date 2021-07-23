@@ -1,28 +1,37 @@
 <template>
   <div>
-    <p>Organisations page</p>
-    <ul class="ngoList">
-      <li v-for="org in ngoArr" v-bind:key="org.index">
-        <b-list-group-item>
-          <a v-bind:href="org[1]" style="padding: 20px">{{ org[0] }}</a>
+    <div>
+      <NavBar> </NavBar>
+    </div>
+    <div style="margin-top:7vh">
+      <p>Organisations page</p>
+      <ul class="ngoList">
+        <li v-for="org in ngoArr" v-bind:key="org.index">
+          <b-list-group-item>
+            <a v-bind:href="org[1]" style="padding: 20px">{{ org[0] }}</a>
+            <br />
+            <b-col lg="4" class="pb-2"
+              ><b-button
+                pill
+                size="sm"
+                v-on:click="getInfo(org[0], org[1], org[2], org[3])"
+                >Information</b-button
+              ></b-col
+            >
+          </b-list-group-item>
           <br />
-          <b-col lg="4" class="pb-2"
-            ><b-button
-              pill
-              size="sm"
-              v-on:click="getInfo(org[0], org[1], org[2], org[3])"
-              >Information</b-button
-            ></b-col
-          >
-        </b-list-group-item>
-        <br />
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+import NavBar from "./Helpers/Navbar.vue";
 export default {
+  components: {
+    NavBar,
+  },
   props: {},
   data() {
     return {
@@ -70,7 +79,7 @@ export default {
   },
 
   methods: {
-    getInfo: function(name,link, contactNum, description) {
+    getInfo: function (name, link, contactNum, description) {
       console.log("name is: " + name);
       this.$router.push({
         name: "OrgInfo",
