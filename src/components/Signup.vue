@@ -1,3 +1,4 @@
+
 <template>
     <div> 
         <p>Signup Page </p>
@@ -11,5 +12,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
