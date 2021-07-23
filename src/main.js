@@ -25,13 +25,33 @@ var firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig)
-const database = firebase.firestore();
-export default database;
+
+
+firebase.getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+          unsubscribe();
+          resolve(user);
+      }, reject);
+  })
+};
 
 const router = new VueRouter({
   mode: 'history',
   routes: Routes
 })
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if (requiresAuth && !await firebase.getCurrentUser()){
+    next('login');
+  }else{
+    next();
+  }
+});
+
+const database = firebase.firestore();
+export default database;
 
 new Vue({
   render: h => h(App),
