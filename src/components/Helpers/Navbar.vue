@@ -15,7 +15,7 @@
                 <template slot="button-content">
                     <b-icon icon = "person-fill" style = "width:30px; height:30px; color : white;"></b-icon>
                 </template>
-                <b-dropdown-item ><router-link to="/signup" style = "color:black;">Profile </router-link> <br /></b-dropdown-item>
+                <b-dropdown-item v-on:click = "profile">Profile <br /></b-dropdown-item>
                 <b-dropdown-item v-on:click = "logout">Log Out</b-dropdown-item>
             </b-nav-item-dropdown>
             </b-navbar-nav>
@@ -31,6 +31,9 @@ export default {
             firebase.auth().signOut().then(() => {
                 this.$router.push({path : "/login"})
             })
+        },
+        profile : function() {
+            this.$router.push('/signup')
         }
     }
 }
