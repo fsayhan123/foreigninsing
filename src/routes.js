@@ -10,6 +10,7 @@ import FindUsers from './components/FindUsers.vue'
 import Events from './components/Events.vue'
 import Map from './components/Map.vue'
 import WaitingPage from './components/WaitingPage.vue'
+import EventsJoined from './components/EventsJoined.vue'
 
 export default [
     {path : '/login', component : Login},
@@ -23,5 +24,6 @@ export default [
     {path:'/findUsers', name: 'FindUsers', component: FindUsers,  meta : {requiresAuth: true}},
     {path:'/events', component: Events,  meta : {requiresAuth: true}},
     {path:'/waitingPage', component: WaitingPage, meta : {requiresAuth: true}},
-    {path:'/map', name : 'map', component: Map, meta : {requiresAuth:true }}
+    {path:'/map', name : 'map', component: Map, meta : {requiresAuth:true }},
+    {path:'/eventsJoined', component: EventsJoined, meta : {requiresAuth:true }},
 ]

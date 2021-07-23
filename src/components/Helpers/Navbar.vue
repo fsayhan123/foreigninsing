@@ -4,7 +4,7 @@
             <b-navbar-nav class = "mr-auto">
             </b-navbar-nav>
             <b-navbar-nav class = "mx-auto center-items">
-                <router-link to="/events" class = "navBarItems">Events</router-link> <br /> 
+                <router-link to="/eventsJoined" class = "navBarItems">Events</router-link> <br /> 
                 <router-link to="/chats" class = "navBarItems">Chats</router-link> <br />
                 <router-link to="/orgs" class = "navBarItems">Organizations </router-link> <br />
                 <router-link to="/groups" class = "navBarItems">Interest Groups </router-link> <br />
