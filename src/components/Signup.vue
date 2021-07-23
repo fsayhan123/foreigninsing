@@ -87,9 +87,9 @@ export default {
             localStorage.setItem("id", user.uid);
             localStorage.setItem("name", this.userName);
             localStorage.setItem("photoURL", this.profilePictureURL);
-            alert("Successfully registered! Please login.");
-            this.$router.push("/");
+            
           });
+        this.$router.push("/");
       }
     },
 
