@@ -17,6 +17,7 @@
 
 <script>
 import firebase from "firebase"
+import database from "../main.js"
 
 export default {
     data : function () {
@@ -39,19 +40,19 @@ export default {
                 // user in with confirmationResult.confirm(code).
                     this.confirmationResult = confirmationResult;
                     this.smsSent = true;
-                    console.log("Reached")
                 }).catch((error) => {
                     console.log(error)
                 });
         },
 
-        submitOTP : function() {
+         submitOTP : function() {
             const code = this.OTPCode;
-            this.confirmationResult.confirm(code).then((result) => {
-                const user = result.user;
-                console.log(user);
-                console.log(result);
-                this.$router.push('/signup')
+            this.confirmationResult.confirm(code).then(async (result) => {
+                const userID = result.user.uid;
+                await database.collection('users').doc(userID)
+                    .set({
+                        phoneNumber : this.phoneNumber
+                    }, {merge: true});
             }).catch((error) => {
                 console.log(error)
             })
@@ -60,7 +61,6 @@ export default {
 
     created() {
         firebase.auth().onAuthStateChanged(user => {
-            this.loading = false;
             if (user) {
                 this.$router.push('/')
             }  

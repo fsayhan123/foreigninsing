@@ -12,11 +12,10 @@
             <b-navbar-nav class = "ml-auto">   
                 
                 <b-nav-item-dropdown right>
-                <!-- Using 'button-content' slot -->
                 <template slot="button-content">
                     <b-icon icon = "person-fill" style = "width:30px; height:30px; color : white;"></b-icon>
                 </template>
-                <b-dropdown-item>Profile</b-dropdown-item>
+                <b-dropdown-item ><router-link to="/signup" style = "color:black;">Profile </router-link> <br /></b-dropdown-item>
                 <b-dropdown-item v-on:click = "logout">Log Out</b-dropdown-item>
             </b-nav-item-dropdown>
             </b-navbar-nav>
