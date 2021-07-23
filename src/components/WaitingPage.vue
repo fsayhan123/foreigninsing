@@ -1,30 +1,13 @@
 <template>
-    <div>
-        <div v-if = "loading" class = "loadingContainer">
-            <b-spinner label = "spinning"></b-spinner>
-        </div>
-        <div v-else> 
-            <NavBar> </NavBar>
-            <p style = "margin-top:7vh">Home Page </p>
-        </div> 
-    </div>   
+    <div style = "display:flex; justify-content:center; height:100vh; align-items-center">
+        <b-spinner></b-spinner>
+    </div>
 </template>
 
 <script>
-import NavBar from './Helpers/Navbar.vue'
 import firebase from "firebase"
 
 export default {
-    data : function () {
-        return {
-            loading:true,
-        }
-    },
-
-    components: {
-        NavBar
-    },
-
     created() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
@@ -34,6 +17,11 @@ export default {
                 const lastTime = userRef.lastSignInTime;
                 console.log(creationTime)
                 console.log(lastTime)
+                if (creationTime === lastTime) {
+                    this.$router.push("/signup")
+                } else {
+                    this.$router.push("/")
+                }
                 this.loading = false;
             }  
         });
@@ -41,6 +29,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style  scoped>
 
 </style>

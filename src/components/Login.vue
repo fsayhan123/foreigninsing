@@ -55,6 +55,7 @@ export default {
                 // user in with confirmationResult.confirm(code).
                     this.confirmationResult = confirmationResult;
                     this.smsSent = true;
+                    this.$router.push('/waitingPage');
                 })
                 .catch((error) => {
                     console.log(error)

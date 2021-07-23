@@ -3,6 +3,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import Routes from './routes.js'
 import firebase from "firebase/app"
+import * as VueGoogleMaps from 'vue2-google-maps'
 import "firebase/auth"
 import "firebase/firestore"
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
@@ -11,9 +12,16 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
-
 Vue.use(VueRouter)
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyA7ZBDOtWP3w6COTuAf7IpvpGySBIR3vsA',
+    libraries: 'places', 
+  },
+})
 Vue.config.productionTip = false
+
+
 var firebaseConfig = {
   apiKey: "AIzaSyD6xnnmm9e4qUOP7w2pDxP2Cbi0FEfjwUU",
   authDomain: "foreigninsg.firebaseapp.com",
