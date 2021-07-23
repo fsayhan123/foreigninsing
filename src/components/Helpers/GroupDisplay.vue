@@ -22,7 +22,7 @@ export default {
     },
     methods : {
         redirect : function() {
-            this.$router.push({ name: 'user', params: {userId: this.data[0]}})
+            this.$router.push({ name: 'feed', query: {groupId: this.data[0]}})
         }
     }
 }
