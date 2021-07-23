@@ -3,7 +3,7 @@
         <div v-if = "loading" class = "loadingContainer">
             <b-spinner label = "spinning"></b-spinner>
         </div>
-        <div> 
+        <div v-else> 
             <NavBar> </NavBar>
             <p style = "margin-top:7vh">Home Page </p>
         </div> 
