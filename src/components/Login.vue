@@ -12,9 +12,6 @@
                 <b-button v-on:click = "submitOTP" variant = "dark" class = "mt-4" style = "width:100%">Log In </b-button>
             </div>
         </div>    
-        <div class = "OTPcontainer"> 
-            
-        </div>
     </div>
 </template>
 
