@@ -15,7 +15,7 @@
       <NavBar> </NavBar>
       <div style="margin-top: 8vh">
         <h3 style="text-align: center">
-          Find your Interest Groups and Communities!
+          Find Events that you are Interested in!
         </h3>
         <div class="flexbox">
           <div style="width: 70%; float: left">
@@ -39,46 +39,49 @@
               </div>
             </div>
           </div>
-          <div class="createGroup">
+          <div class="createEvent">
             <b-form-group
               id="fieldset-1"
-              label="Name of Community"
+              label="Name of Event"
               label-for="input-1"
             >
               <b-form-input
                 id="input-1"
-                v-model="groupName"
+                v-model="eventName"
                 :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
             <b-form-group
               id="fieldset-2"
-              label="Brief Description"
+              label="Event Description"
               label-for="input-2"
             >
               <b-form-input
                 id="input-2"
-                v-model="briefDescription"
+                v-model="eventDesc"
+                style="height: 100px"
                 :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
             <b-form-group
               id="fieldset-3"
-              label="Information on the Community"
+              label="Venue of Event"
               label-for="input-3"
             >
               <b-form-input
-                style="height: 100px"
                 id="input-3"
-                v-model="groupDescription"
+                v-model="eventVenue"
                 :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
-            <br>
-            <b-button v-on:click="createGroup" pill variant="primary">Create Group</b-button>
+            <label for = "date">Date of Event </label> <br> 
+            <b-form-datepicker name="date" v-model = "eventDate" :min = "new Date()" required style = "width:100%"> </b-form-datepicker><br>
+            <b-button v-on:click="createEvent" pill variant="primary"
+              >Create Event</b-button
+            >
           </div>
         </div>
       </div>
@@ -101,9 +104,10 @@ export default {
       loading: true,
       groupsArray: [],
       chunkedGroupsArray: [],
-      groupName: "",
-      briefDescription: "",
-      groupDescription: "",
+      eventName: "",
+      eventDesc: "",
+      eventVenue: "",
+      eventDate: ""
     };
   },
 
@@ -121,33 +125,33 @@ export default {
         this.chunkedGroupsArray.push(temp);
       }
     },
-    async createGroup() {
-        await firebase
+    async createEvent() {
+      await firebase
         .firestore()
-        .collection("Communities")
+        .collection("Events")
         .add({
-            communityName: this.groupName,
-            briefDesc: this.briefDescription,
-            groupDesc: this.groupDescription,
+          eventName: this.eventName,
+          eventDesc: this.eventDesc,
+          eventVenue: this.eventVenue,
+          eventDate: this.eventDate,
+          attendee: []
         })
         .then(() => {
-          alert("Community Created!");
-          location.reload()
-        //   this.$router.push("/")
+          alert("Event Created!");
+          location.reload();
         })
         .catch((error) => {
           alert(error.message);
         });
-    }
+    },
+    
   },
-
   async mounted() {
     await database
       .collection("Communities")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
           this.groupsArray.push([doc.id, doc.data()]);
         });
       });
@@ -155,6 +159,8 @@ export default {
     console.log(this.chunkedGroupsArray);
     this.loading = false;
   },
+  
+
 };
 </script>
 
@@ -191,7 +197,7 @@ export default {
   float: "left";
 }
 
-.createGroup {
+.createEvent {
   border: 1px solid black;
   width: 28%;
   margin-top: 20px;

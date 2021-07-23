@@ -7,6 +7,7 @@
             <p style = "font-size:22px;"><strong>{{data[1].communityName}}</strong></p>
             <p style = "font-size: 14px;">{{data[1].description}}</p>
         </div>
+        
     </div>
 </template>
 

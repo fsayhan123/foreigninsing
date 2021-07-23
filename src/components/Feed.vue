@@ -1,5 +1,6 @@
 <template>
     <div>
+        <b-button v-on:click="goToEvents" pill variant="primary" style="margin-top:10vh; margin-left:580px">uglybuttonthatwillbechangedtobootstraptabs</b-button>
         <div v-if = "loading" style = "display:flex; height:100vh; justify-content:center; align-items:center">
             <b-spinner label = "spinning"></b-spinner>
         </div>
@@ -80,10 +81,12 @@ export default {
             }
             this.$router.go()
         },
-
         changeImage: function(e) {
             const image = e.target.files[0];
             this.toUploadImage = image;
+        },
+        goToEvents: function() {
+            this.$router.push("/events")
         }
     },
 
