@@ -88,16 +88,16 @@ export default {
       if (content.trim() === "") {
         return;
       }
-
+    console.log("1 RAN ALREADY")
       if (!this.userChats.some(users => users['id'] === this.currentPeerUser['id'])) {
 
         this.userChats.push(this.currentPeerUser);
-
+        console.log("2 RAN ALREADY")
         var currentUserChat = [];
         var peerUserChat = [];
 
         await database
-          .collection("userInfo")
+          .collection("users")
           .doc(this.currentUserId)
           .get()
           .then((doc) => {
@@ -106,7 +106,7 @@ export default {
           });
         currentUserChat.push(this.currentPeerUser);
 
-        await database.collection("userInfo").doc(this.currentUserId).update({
+        await database.collection("users").doc(this.currentUserId).update({
           chatList: currentUserChat,
         });
 
@@ -116,7 +116,7 @@ export default {
           URL: this.currentUserPhoto,
         });
         await database
-          .collection("userInfo")
+          .collection("users")
           .doc(this.currentPeerUser.id)
           .update({
             chatList: peerUserChat,

@@ -1,9 +1,7 @@
 <template>
   <div>
-    <div>
-        <NavBar></NavBar>>
-    </div>
-    <div style="margin-top:5vh">
+    <div><NavBar></NavBar>></div>
+    <div style="margin-top: 5vh">
       <div class="wrapper">
         <!-- Sidebar  -->
         <nav style="color: white" id="sidebar">
@@ -73,6 +71,9 @@
           <div>
             <h2>Welcome {{ currentUserName }},</h2>
             <h3>Check your Messages</h3>
+            <b-button v-on:click="findAllUsers()"
+              >Search for other users!</b-button
+            >
           </div>
         </div>
         <div v-else class="header-width">
@@ -94,8 +95,13 @@ import NavBar from "./Helpers/Navbar.vue";
 
 export default {
   app: "Chat",
+  name: 'Chats',
   components: {
     ChatBox, NavBar,
+  },
+  props: {
+      peerName: String,
+      peerID: String,
   },
   data() {
     return {
@@ -122,8 +128,8 @@ export default {
     },
     async getChats() {
       await database
-        .collection("userInfo")
-        .where("id", "==", this.currentUserId)
+        .collection("users")
+        .where("uid", "==", this.currentUserId)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
@@ -133,7 +139,7 @@ export default {
     },
 
     async getUserList() {
-      const result = await firebase.firestore().collection("userInfo").get();
+      const result = await firebase.firestore().collection("users").get();
       if (result.docs.length > 0) {
         let listUsers = [];
         listUsers = [...result.docs];
@@ -141,14 +147,23 @@ export default {
           this.searchUsers.push({
             key: index,
             documentKey: item.id,
-            id: item.data().id,
-            name: item.data().username,
+            id: item.data().uid,
+            name: item.data().Username,
             URL: item.data().profilePictureURL,
             //description: item.data().description
           });
         });
       }
     },
+    async findAllUsers() {
+        this.$router.push({
+            name: "FindUsers",
+            query: {
+                userID : this.currentUserId,
+                username : this.currentUserName
+            }
+        })
+    }
   },
   created() {
     if (!Object.prototype.hasOwnProperty.call(localStorage, "id")) {

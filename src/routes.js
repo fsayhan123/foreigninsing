@@ -4,6 +4,7 @@ import Home from './components/Home.vue'
 import Organisations from './components/Organisations.vue'
 import OrgInfo from './components/OrgInfo.vue'
 import Chats from './components/Chats.vue'
+import FindUsers from './components/FindUsers.vue'
 
 export default [
     {path : '/login', component : Login},
@@ -11,5 +12,6 @@ export default [
     {path : '/', component : Home, meta: {requiresAuth: true}},
     {path: '/orgs', component: Organisations},
     {path: '/orgInfo', name: 'OrgInfo', component: OrgInfo},
-    {path: '/chats', component: Chats}
+    {path: '/chats', name: 'Chats', component: Chats},
+    {path:'/findUsers', name: 'FindUsers', component: FindUsers}
 ]
