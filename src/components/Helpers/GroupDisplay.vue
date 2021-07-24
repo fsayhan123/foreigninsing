@@ -24,7 +24,7 @@ export default {
     methods : {
         redirect : function() {
             console.log("THIS IS: " + this.data[1])
-            this.$router.push({ name: 'feed', query: {groupId: this.data[0], group: this.data[1]}})
+            this.$router.push({ name: 'feed', query: {groupId: this.data[0]}})
         }
     }
 }

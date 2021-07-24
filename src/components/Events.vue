@@ -130,7 +130,6 @@ export default {
         .add({
           eventName: this.eventName,
           eventDesc: this.eventDesc,
-          eventVenue: this.eventVenue,
           eventDate: this.eventDate,
           groupId : this.$route.query.groupId,
           position: {
@@ -180,7 +179,7 @@ export default {
           .update({
             attendee: attendees
           });
-        this.$router.refresh()
+        location.refresh()
     }, 
     goToFeed() {
       this.$router.push({ name: 'feed', query: {groupId: this.$route.query.groupId }})

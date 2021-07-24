@@ -26,7 +26,7 @@
     <div v-else>
       <NavBar></NavBar>
       <div class="card" style="margin:30px 200px; background-color:lightBlue">
-        <div class="card-body">{{ this.group.groupDesc }}</div>
+        <div class="card-body">{{ this.groupDesc }}</div>
       </div>
       <div class="createPostContainer">
         <h5>Share your thoughts!</h5>
@@ -83,6 +83,7 @@ export default {
         return {
             loading: true,
             postsArray : [],
+            groupDesc : "",
             newPost : {
                 communityId : this.$route.query.groupId,
                 description: "",
@@ -133,6 +134,7 @@ export default {
         },
     },
 
+
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -155,6 +157,12 @@ export default {
     const groupId = this.$route.query.groupId;
     this.group = this.$route.query.group;
     console.log(groupId);
+    await database.collection("Communities")
+    .doc(groupId)
+    .get()
+    .then((doc) => {
+        this.groupDesc = doc.data().groupDesc
+    })
     await database
       .collection("posts")
       .where("communityId", "==", groupId)
