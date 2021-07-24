@@ -7,7 +7,8 @@
         style="margin-top: 7vh; display: flex; justify-content: center"
       >
         <b-tab title="Social Feed" active></b-tab>
-        <b-tab title="Events" v-on:click="goToEvents"></b-tab>
+        <b-tab title = "Upcoming Events" v-on:click = "goToEvents"></b-tab>
+        <b-tab title = "Events Near Me" v-on:click = "goToMap"></b-tab>
       </b-tabs>
     </b-card>
     <div
@@ -51,6 +52,7 @@
       <div class="postContainer">
         <div v-if="postsArray.length === 0" class="emptyFeed mt-2">
           <p>There are currently no posts in this community.</p>
+
         </div>
         <div
           v-else
@@ -72,31 +74,65 @@ import database from "../main.js";
 import firebase from "firebase";
 
 export default {
-  components: {
-    NavBar,
-    PostDisplay,
-  },
-  props: {
-    group: Object,
-  },
-  data: function () {
-    return {
-      loading: true,
-      postsArray: [],
-      newPost: {
-        communityId: this.$route.query.groupId,
-        description: "",
-        imageURL: "",
-        user: {
-          Username: "",
-          profilePictureURL: "",
-          userId: "",
+    components : {
+        NavBar,
+        PostDisplay,
+    },
+
+    data : function () {
+        return {
+            loading: true,
+            postsArray : [],
+            newPost : {
+                communityId : this.$route.query.groupId,
+                description: "",
+                imageURL : "",
+                user : {
+                    Username : "",
+                    profilePictureURL : "",
+                    userId : "",
+                }
+            },
+            toUploadImage : null,
+            newImageURL : null,
+        }
+    },
+    
+    methods: {
+        submit: async function() {
+
+            console.log(this.newPost)
+            var documentId = ""
+            await database.collection('posts').add(
+                this.newPost
+            ).then((docRef) => {
+                documentId = docRef.id;
+            })
+            if (!(this.toUploadImage === null)) {
+                var postRef = firebase.storage().ref().child(`postPicture/${documentId}.jpg`);
+                await postRef.put(this.toUploadImage).then(console.log("Done"));
+                await postRef.getDownloadURL().then((url) => {
+                    this.newImageURL = url;
+                })
+                await database.collection('posts').doc(documentId)
+                    .update({
+                        imageURL : this.newImageURL
+                    });
+            }
+            location.reload()
         },
-      },
-      toUploadImage: null,
-      newImageURL: null,
-    };
-  },
+        changeImage: function(e) {
+            const image = e.target.files[0];
+            this.toUploadImage = image;
+        },
+        goToEvents: function() {
+            this.$router.push({ name: 'events', query: {groupId: this.$route.query.groupId}})
+        },
+        goToMap() {
+            this.$router.push({ name: 'map', query: {groupId: this.$route.query.groupId }})
+        },
+    },
+
 
   methods: {
     submit: async function () {

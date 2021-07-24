@@ -15,16 +15,17 @@
       <NavBar> </NavBar>
       <b-card no-body>
             <b-tabs pills card style = "margin-top: 7vh; display:flex; justify-content:center;">
-            <b-tab title="Social Feed" v-on:click = "goToFeed"></b-tab>
-            <b-tab title="Events" active></b-tab>
+            <b-tab title = "Social Feed" v-on:click = "goToFeed"></b-tab>
+            <b-tab title = "Upcoming Events" active></b-tab>
+            <b-tab title = "Events Near Me" v-on:click = "goToMap"></b-tab>
             </b-tabs>
-        </b-card>
+      </b-card>
       <div style="margin-top: 2vh">
         <h3 style="text-align: center">
           Find Events that you are Interested in!
         </h3>
         <div class="flexbox">
-          <div style="width: 70%; float: left">
+          <div style="width: 60%; float: left">
             <div v-for="(ev, index) in evArray" :key="index">
               <b-card-group deck style="margin:30px">
                 <b-card
@@ -65,17 +66,20 @@
                 trim
               ></b-form-input>
             </b-form-group>
-            <b-form-group
-              id="fieldset-3"
-              label="Venue of Event"
-              label-for="input-3"
-            >
-              <b-form-input
-                id="input-3"
-                v-model="eventVenue"
-                trim
-              ></b-form-input>
-            </b-form-group>
+            <p><strong>Drag the marker to your meeting place</strong> </p>
+            <GmapMap
+                :center="{lat:1.348674, lng:103.867691}"
+                :zoom="15"
+                map-type-id="terrain"
+                style="width: 100%; height: 30vh"
+                    >
+                    <GmapMarker
+                        :position= "{lat: eventlat, lng: eventlng}"
+                        :clickable= "true"
+                        :draggable= "true"
+                        @dragend="gMapFunc($event.latLng)"
+                    />
+              </GmapMap>
             <label for="date">Date of Event </label> <br />
             <b-form-datepicker
               name="date"
@@ -100,6 +104,7 @@
 import NavBar from "./Helpers/Navbar.vue";
 import database from "../main.js";
 import firebase from "firebase";
+
 export default {
   components: {
     NavBar,
@@ -110,9 +115,10 @@ export default {
       evArray: [],
       eventName: "",
       eventDesc: "",
-      eventVenue: "",
       eventDate: "",
       uid: "",
+      eventlat: 1.348674,
+      eventlng: 103.867691,
     };
   },
 
@@ -127,6 +133,10 @@ export default {
           eventVenue: this.eventVenue,
           eventDate: this.eventDate,
           groupId : this.$route.query.groupId,
+          position: {
+            lat: this.eventlat,
+            lng: this.eventlng,
+          },
           attendee: [],
         })
         .then(() => {
@@ -170,9 +180,19 @@ export default {
           .update({
             attendee: attendees
           });
+        this.$router.refresh()
     }, 
     goToFeed() {
       this.$router.push({ name: 'feed', query: {groupId: this.$route.query.groupId }})
+    },
+    goToMap() {
+      this.$router.push({ name: 'map', query: {groupId: this.$route.query.groupId }})
+    },
+    gMapFunc(evnt) {
+            console.log(evnt.lat())
+            this.eventlat = evnt.lat()
+            console.log(evnt.lng())
+            this.eventlng = evnt.lng()
     }
   },
   created() {
@@ -187,6 +207,7 @@ export default {
     await database
       .collection("Events")
       .where("groupId", "==", this.$route.query.groupId)
+      .orderBy("eventDate", "asc")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
