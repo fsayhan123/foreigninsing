@@ -1,6 +1,6 @@
 <template>
   <div>
-      <p>hi</p>
+    <p>hi</p>
     <ul class="list-group" v-for="(ev, index) in this.events" :key="index">
       <li class="list-group-item"></li>
       {{
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from "firebase";
 export default {
   data: function () {
     return {
@@ -33,20 +33,21 @@ export default {
         .get()
         .then((doc) => {
           idArr = doc.data().events;
-          console.log(idArr)
+          console.log(idArr);
         });
-      await firebase
-      .firestore()
-        .collection("Events")
-        .doc()
-        .get()
-        .then((doc) => {
-            console.log(doc.id)
-          if (doc.id in idArr) {
-            console.log("doc name is: " + doc.data().eventName);
-            this.events.push(doc.data());
-          }
-        });
+      for (let x of idArr) {
+        await firebase
+          .firestore()
+          .collection("Events")
+          .where('attendee', 'array-contains', x)
+          .get()
+          .then((snapshot) => {
+              snapshot.forEach((doc) =>{
+                console.log("event is: " + doc.data().eventName)
+              this.events.push(doc.data())
+              })
+          });
+      }
     },
   },
   created() {
