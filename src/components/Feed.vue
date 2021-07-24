@@ -133,44 +133,6 @@ export default {
         },
     },
 
-
-  methods: {
-    submit: async function () {
-      console.log(this.newPost);
-      var documentId = "";
-      await database
-        .collection("posts")
-        .add(this.newPost)
-        .then((docRef) => {
-          documentId = docRef.id;
-        });
-      if (!(this.toUploadImage === null)) {
-        var postRef = firebase
-          .storage()
-          .ref()
-          .child(`postPicture/${documentId}.jpg`);
-        await postRef.put(this.toUploadImage).then(console.log("Done"));
-        await postRef.getDownloadURL().then((url) => {
-          this.newImageURL = url;
-        });
-        await database.collection("posts").doc(documentId).update({
-          imageURL: this.newImageURL,
-        });
-      }
-      this.$router.go();
-    },
-    changeImage: function (e) {
-      const image = e.target.files[0];
-      this.toUploadImage = image;
-    },
-    goToEvents: function () {
-      this.$router.push({
-        name: "events",
-        query: { groupId: this.$route.query.groupId },
-      });
-    },
-  },
-
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
