@@ -3,7 +3,8 @@
         <b-card no-body>
             <b-tabs pills card style = "margin-top: 7vh; display:flex; justify-content:center;">
             <b-tab title="Social Feed" active></b-tab>
-            <b-tab title="Events" v-on:click = "goToEvents"></b-tab>
+            <b-tab title = "Upcoming Events" v-on:click = "goToEvents"></b-tab>
+            <b-tab title = "Events Near Me" v-on:click = "goToMap"></b-tab>
             </b-tabs>
         </b-card>
         <div v-if = "loading" style = "display:flex; height:100vh; justify-content:center; align-items:center">
@@ -84,7 +85,7 @@ export default {
                         imageURL : this.newImageURL
                     });
             }
-            this.$router.go()
+            location.reload()
         },
         changeImage: function(e) {
             const image = e.target.files[0];
@@ -92,7 +93,10 @@ export default {
         },
         goToEvents: function() {
             this.$router.push({ name: 'events', query: {groupId: this.$route.query.groupId}})
-        }
+        },
+        goToMap() {
+            this.$router.push({ name: 'map', query: {groupId: this.$route.query.groupId }})
+        },
     },
 
     created() {
