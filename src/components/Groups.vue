@@ -77,8 +77,23 @@
                 trim
               ></b-form-input>
             </b-form-group>
+            <br />
+            <div>
+              <b-button style="border-radius: 30px" @click="click1"
+                >Choose a photo</b-button
+              >
+              <input
+                type="file"
+                accept="image/*"
+                ref="input1"
+                style="display: none"
+                @change="previewImage"
+              />
+            </div>
             <br>
-            <b-button v-on:click="createGroup" pill variant="primary">Create Group</b-button>
+            <b-button v-on:click="createGroup" pill variant="primary"
+              >Create Group</b-button
+            >
           </div>
         </div>
       </div>
@@ -104,10 +119,43 @@ export default {
       groupName: "",
       briefDescription: "",
       groupDescription: "",
+      img1: "",
     };
   },
 
   methods: {
+      click1() {
+      this.$refs.input1.click();
+    },
+    previewImage(event) {
+      this.uploadValue = 0;
+      this.img1 = null;
+      this.imageData = event.target.files[0];
+      this.onUpload();
+    },
+    onUpload() {
+      this.img1 = null;
+      const storageRef = firebase
+        .storage()
+        .ref(`${this.imageData.name}`)
+        .put(this.imageData);
+      storageRef.on(
+        `state_changed`,
+        (snapshot) => {
+          this.uploadValue =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        },
+        (error) => {
+          console.log(error.message);
+        },
+        () => {
+          this.uploadValue = 100;
+          storageRef.snapshot.ref.getDownloadURL().then((url) => {
+            this.img1 = url;
+          });
+        }
+      );
+    },
     chunkArray: function () {
       var temp = [];
       for (let i = 0; i < this.groupsArray.length; i++) {
@@ -122,23 +170,24 @@ export default {
       }
     },
     async createGroup() {
-        await firebase
+      await firebase
         .firestore()
         .collection("Communities")
         .add({
-            communityName: this.groupName,
-            briefDesc: this.briefDescription,
-            groupDesc: this.groupDescription,
+          communityName: this.groupName,
+          briefDesc: this.briefDescription,
+          groupDesc: this.groupDescription,
+          groupPic : this.img1,
         })
         .then(() => {
           alert("Community Created!");
-          location.reload()
-        //   this.$router.push("/")
+          location.reload();
+          //   this.$router.push("/")
         })
         .catch((error) => {
           alert(error.message);
         });
-    }
+    },
   },
 
   async mounted() {

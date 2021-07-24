@@ -1,11 +1,11 @@
 <template>
     <div class = "card" v-on:click = "redirect">
         <div class = "icon">
-            <b-avatar src = "https://placekitten.com/300/300" size = "4rem"></b-avatar>
+            <b-avatar :src = 'data[1].groupPic' size = "4rem"></b-avatar>
         </div>
         <div class = "text">
-            <p style = "font-size:22px;"><strong>{{data[1].communityName}}</strong></p>
-            <p style = "font-size: 14px;">{{data[1].description}}</p>
+            <p style = "font-size:20px;"><strong>{{data[1].communityName}}</strong></p>
+            <p style = "font-size: 14px;">{{data[1].briefDesc}}</p>
         </div>
         
     </div>
@@ -23,7 +23,8 @@ export default {
     },
     methods : {
         redirect : function() {
-            this.$router.push({ name: 'feed', query: {groupId: this.data[0]}})
+            console.log("THIS IS: " + this.data[1])
+            this.$router.push({ name: 'feed', query: {groupId: this.data[0], group: this.data[1]}})
         }
     }
 }
