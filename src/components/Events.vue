@@ -36,6 +36,19 @@
                 <h6>Date: {{ ev[1].eventDate }}</h6>
                   <h6>{{ ev[1].eventDesc }}</h6>
                   <p>Number of people attending: {{ev[1].attendee.length}} </p>
+                  <GmapMap
+                        :center= "ev[1].position"
+                        :zoom="16"
+                        map-type-id="terrain"
+                        style="width: 100%; height: 20vh"
+                        >
+                        <GmapMarker
+                            :key= "index"
+                            :position= "ev[1].position"
+                            :clickable= "false"
+                            :draggable= "false"
+                        />
+                    </GmapMap>
                   <b-button v-if = "ev[1].attendee.includes(uid)" disabled>You already signed up for this event </b-button>
                   <b-button v-else v-on:click="joinEvent(ev[0])" variant="primary">Sign up for event</b-button>
                 </b-card>
@@ -179,7 +192,7 @@ export default {
           .update({
             attendee: attendees
           });
-        location.refresh()
+        location.reload()
     }, 
     goToFeed() {
       this.$router.push({ name: 'feed', query: {groupId: this.$route.query.groupId }})
