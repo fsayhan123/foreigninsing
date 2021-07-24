@@ -19,24 +19,18 @@
         </h3>
         <div class="flexbox">
           <div style="width: 70%; float: left">
-            <div
-              class="groupsContainer"
-              v-for="(group, index) in chunkedGroupsArray"
-              :key="index"
-            >
-              <div v-if="group.length == 2" class="rowContainer">
-                <div class="item">
-                  <GroupDisplay v-bind:data="group[0]"></GroupDisplay>
-                </div>
-                <div class="item">
-                  <GroupDisplay v-bind:data="group[1]"></GroupDisplay>
-                </div>
-              </div>
-              <div v-else class="rowContainer">
-                <div class="item">
-                  <GroupDisplay v-bind:data="group[0]"></GroupDisplay>
-                </div>
-              </div>
+            <div v-for="(ev, index) in evArray" :key="index">
+              <b-card-group deck style="margin:30px">
+                <b-card
+                  footer= " "
+                  footer-tag="footer"
+                >
+                <h4>Event: {{ev[1].eventName}}</h4>
+                <h6>Date: {{ ev[1].eventDate }}</h6>
+                  <h6>{{ ev[1].eventDesc }}</h6>
+                  <b-button v-on:click="joinEvent(ev[0])" variant="primary">Sign up for event</b-button>
+                </b-card>
+              </b-card-group>
             </div>
           </div>
           <div class="createEvent">
@@ -77,8 +71,16 @@
                 trim
               ></b-form-input>
             </b-form-group>
-            <label for = "date">Date of Event </label> <br> 
-            <b-form-datepicker name="date" v-model = "eventDate" :min = "new Date()" required style = "width:100%"> </b-form-datepicker><br>
+            <label for="date">Date of Event </label> <br />
+            <b-form-datepicker
+              name="date"
+              v-model="eventDate"
+              :min="new Date()"
+              required
+              style="width: 100%"
+            >
+            </b-form-datepicker
+            ><br />
             <b-button v-on:click="createEvent" pill variant="primary"
               >Create Event</b-button
             >
@@ -92,39 +94,24 @@
 <script>
 import NavBar from "./Helpers/Navbar.vue";
 import database from "../main.js";
-import GroupDisplay from "./Helpers/GroupDisplay.vue";
 import firebase from "firebase";
 export default {
   components: {
     NavBar,
-    GroupDisplay,
   },
   data: function () {
     return {
       loading: true,
-      groupsArray: [],
-      chunkedGroupsArray: [],
+      evArray: [],
       eventName: "",
       eventDesc: "",
       eventVenue: "",
-      eventDate: ""
+      eventDate: "",
+      uid: "",
     };
   },
 
   methods: {
-    chunkArray: function () {
-      var temp = [];
-      for (let i = 0; i < this.groupsArray.length; i++) {
-        temp.push(this.groupsArray[i]);
-        if (temp.length > 1) {
-          this.chunkedGroupsArray.push(temp);
-          temp = [];
-        }
-      }
-      if (temp.length > 0) {
-        this.chunkedGroupsArray.push(temp);
-      }
-    },
     async createEvent() {
       await firebase
         .firestore()
@@ -134,7 +121,7 @@ export default {
           eventDesc: this.eventDesc,
           eventVenue: this.eventVenue,
           eventDate: this.eventDate,
-          attendee: []
+          attendee: [],
         })
         .then(() => {
           alert("Event Created!");
@@ -144,23 +131,52 @@ export default {
           alert(error.message);
         });
     },
-    
+    async joinEvent(eventID) {
+        var enterUser = firebase.auth().currentUser;
+        this.uid = enterUser.uid;
+        var newEvents = []
+        await database
+          .collection("users")
+          .doc(this.uid)
+          .get()
+          .then((doc) => {
+              newEvents = doc.data().events
+          })
+        newEvents.push(eventID)
+        await database
+          .collection("users")
+          .doc(this.uid)
+          .update({
+            events: newEvents
+          });
+        var attendees = []
+        await database
+          .collection("Events")
+          .doc(eventID)
+          .get()
+          .then((doc) => {
+              attendees = doc.data().attendee
+          })
+        attendees.push(this.uid)
+        await database
+          .collection("Events")
+          .doc(eventID)
+          .update({
+            attendee: attendees
+          });
+    }
   },
   async mounted() {
     await database
-      .collection("Communities")
+      .collection("Events")
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          this.groupsArray.push([doc.id, doc.data()]);
+          this.evArray.push([doc.id, doc.data()]);
         });
       });
-    this.chunkArray();
-    console.log(this.chunkedGroupsArray);
     this.loading = false;
   },
-  
-
 };
 </script>
 
