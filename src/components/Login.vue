@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="loginContainer">
+      <img src = "../../public/ForeignInSing-logos_transparent.png" style = "width:300px; height:300px;" />
       <b-form class="formDisplay" v-on:submit.prevent="onSignInSubmit">
-        <h2>Sign in with Phone Number</h2>
+        <h4>Sign in with Phone Number</h4>
         <label>Phone:</label>
         <b-form-input placeholder="Enter Phone Number" v-model="phoneNumber">
         </b-form-input>
@@ -100,7 +101,7 @@ export default {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 this.addToLocalStorage();
-                this.$router.push('/');
+                this.$router.push('/waitingPage');
             }  
         });
     },

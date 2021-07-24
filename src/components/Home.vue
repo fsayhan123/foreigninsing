@@ -28,12 +28,7 @@ export default {
     created() {
         firebase.auth().onAuthStateChanged(user => {
             if (user) {
-                const userRef = firebase.auth().currentUser.metadata
-                console.log(userRef);
-                const creationTime = userRef.creationTime;
-                const lastTime = userRef.lastSignInTime;
-                console.log(creationTime)
-                console.log(lastTime)
+                this.$router.push('/groups')
                 this.loading = false;
             }  
         });

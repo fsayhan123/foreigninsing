@@ -89,7 +89,7 @@ export default {
             localStorage.setItem("photoURL", this.profilePictureURL);
             
           });
-        this.$router.push("/");
+        this.$router.push("/groups");
       }
     },
 

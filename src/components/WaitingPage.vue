@@ -20,7 +20,7 @@ export default {
                 if (creationTime === lastTime) {
                     this.$router.push("/signup")
                 } else {
-                    this.$router.push("/")
+                    this.$router.push("/groups")
                 }
                 this.loading = false;
             }  
