@@ -22,7 +22,7 @@ export default [
     {path: '/feed', name: 'feed', component: Feed, meta : {requiresAuth: true}},
     {path: '/chats', name: 'Chats', component: Chats,  meta : {requiresAuth: true}},
     {path:'/findUsers', name: 'FindUsers', component: FindUsers,  meta : {requiresAuth: true}},
-    {path:'/events', component: Events,  meta : {requiresAuth: true}},
+    {path:'/events', name : 'events', component: Events,  meta : {requiresAuth: true}},
     {path:'/waitingPage', component: WaitingPage, meta : {requiresAuth: true}},
     {path:'/map', name : 'map', component: Map, meta : {requiresAuth:true }},
     {path:'/eventsJoined', component: EventsJoined, meta : {requiresAuth:true }},

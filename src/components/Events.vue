@@ -13,7 +13,13 @@
     </div>
     <div v-else>
       <NavBar> </NavBar>
-      <div style="margin-top: 8vh">
+      <b-card no-body>
+            <b-tabs pills card style = "margin-top: 7vh; display:flex; justify-content:center;">
+            <b-tab title="Social Feed" v-on:click = "goToFeed"></b-tab>
+            <b-tab title="Events" active></b-tab>
+            </b-tabs>
+        </b-card>
+      <div style="margin-top: 2vh">
         <h3 style="text-align: center">
           Find Events that you are Interested in!
         </h3>
@@ -28,7 +34,9 @@
                 <h4>Event: {{ev[1].eventName}}</h4>
                 <h6>Date: {{ ev[1].eventDate }}</h6>
                   <h6>{{ ev[1].eventDesc }}</h6>
-                  <b-button v-on:click="joinEvent(ev[0])" variant="primary">Sign up for event</b-button>
+                  <p>Number of people attending: {{ev[1].attendee.length}} </p>
+                  <b-button v-if = "ev[1].attendee.includes(uid)" disabled>You already signed up for this event </b-button>
+                  <b-button v-else v-on:click="joinEvent(ev[0])" variant="primary">Sign up for event</b-button>
                 </b-card>
               </b-card-group>
             </div>
@@ -42,7 +50,6 @@
               <b-form-input
                 id="input-1"
                 v-model="eventName"
-                :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
@@ -55,7 +62,6 @@
                 id="input-2"
                 v-model="eventDesc"
                 style="height: 100px"
-                :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
@@ -67,7 +73,6 @@
               <b-form-input
                 id="input-3"
                 v-model="eventVenue"
-                :state="state"
                 trim
               ></b-form-input>
             </b-form-group>
@@ -85,7 +90,7 @@
               >Create Event</b-button
             >
           </div>
-        </div>
+        </div>  
       </div>
     </div>
   </div>
@@ -121,6 +126,7 @@ export default {
           eventDesc: this.eventDesc,
           eventVenue: this.eventVenue,
           eventDate: this.eventDate,
+          groupId : this.$route.query.groupId,
           attendee: [],
         })
         .then(() => {
@@ -164,11 +170,23 @@ export default {
           .update({
             attendee: attendees
           });
+    }, 
+    goToFeed() {
+      this.$router.push({ name: 'feed', query: {groupId: this.$route.query.groupId }})
     }
   },
+  created() {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.uid = user.uid
+            }  
+        });
+    },
+
   async mounted() {
     await database
       .collection("Events")
+      .where("groupId", "==", this.$route.query.groupId)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {

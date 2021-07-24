@@ -1,6 +1,11 @@
 <template>
     <div>
-        <b-button v-on:click="goToEvents" pill variant="primary" style="margin-top:10vh; margin-left:580px">uglybuttonthatwillbechangedtobootstraptabs</b-button>
+        <b-card no-body>
+            <b-tabs pills card style = "margin-top: 7vh; display:flex; justify-content:center;">
+            <b-tab title="Social Feed" active></b-tab>
+            <b-tab title="Events" v-on:click = "goToEvents"></b-tab>
+            </b-tabs>
+        </b-card>
         <div v-if = "loading" style = "display:flex; height:100vh; justify-content:center; align-items:center">
             <b-spinner label = "spinning"></b-spinner>
         </div>
@@ -86,7 +91,7 @@ export default {
             this.toUploadImage = image;
         },
         goToEvents: function() {
-            this.$router.push("/events")
+            this.$router.push({ name: 'events', query: {groupId: this.$route.query.groupId}})
         }
     },
 
