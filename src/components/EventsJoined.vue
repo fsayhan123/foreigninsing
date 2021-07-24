@@ -38,6 +38,7 @@
 </template>
 
 <script>
+
 import firebase from 'firebase'
 import Navbar from './Helpers/Navbar.vue'
 
@@ -56,6 +57,7 @@ export default {
     async fetchEvents() {
       var enterUser = firebase.auth().currentUser;
       this.uid = enterUser.uid;
+
       await firebase
       .firestore()
         .collection("Events")
@@ -69,7 +71,6 @@ export default {
         });
         this.loading = false
         console.log(this.events)
-
     },
   },
   created() {
