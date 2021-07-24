@@ -1,23 +1,55 @@
 <template>
   <div>
-    <p>hi</p>
-    <ul class="list-group" v-for="(ev, index) in this.events" :key="index">
-      <li class="list-group-item"></li>
-      {{
-        ev.eventName
-      }}
-      <li class="list-group-item list-group-item-primary">
-        This is a primary list group item
-      </li>
-    </ul>
+    <div v-if = "loading">
+      <b-spinner label = "spinner"></b-spinner>
+    </div>
+    <div v-else>
+      <Navbar></Navbar>
+      <div style = "margin-top:10vh">
+        <div v-for="(ev, index) in events" :key="index" class = "mt-5" >
+              <b-card-group deck style="margin:30px; width:60%; margin-left:auto; margin-right:auto;" >
+                <b-card
+                  footer= " "
+                  footer-tag="footer"
+                >
+                <h4>Event: {{ev[1].eventName}}</h4>
+                <h6>Date: {{ ev[1].eventDate }}</h6>
+                  <h6>{{ ev[1].eventDesc }}</h6>
+                  <p>Number of people attending: {{ev[1].attendee.length}} </p>
+                  <GmapMap
+                        :center= "ev[1].position"
+                        :zoom="16"
+                        map-type-id="terrain"
+                        style="width: 100%; height: 20vh"
+                        >
+                        <GmapMarker
+                            :key= "index"
+                            :position= "ev[1].position"
+                            :clickable= "false"
+                            :draggable= "false"
+                        />
+                    </GmapMap>
+                </b-card>
+              </b-card-group>
+            </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import firebase from "firebase";
+
+import firebase from 'firebase'
+import Navbar from './Helpers/Navbar.vue'
+
 export default {
+  components : {
+    Navbar
+  },
   data: function () {
     return {
+      loading:true, 
+      uid: "",
       events: [],
     };
   },
@@ -25,34 +57,30 @@ export default {
     async fetchEvents() {
       var enterUser = firebase.auth().currentUser;
       this.uid = enterUser.uid;
-      var idArr = [];
+
       await firebase
-        .firestore()
-        .collection("users")
-        .doc(this.uid)
+      .firestore()
+        .collection("Events")
+        .where("attendee", "array-contains", this.uid)
+        .orderBy("eventDate", "asc")
         .get()
-        .then((doc) => {
-          idArr = doc.data().events;
-          console.log(idArr);
-        });
-      for (let x of idArr) {
-        await firebase
-          .firestore()
-          .collection("Events")
-          .where('attendee', 'array-contains', x)
-          .get()
-          .then((snapshot) => {
-              snapshot.forEach((doc) =>{
-                console.log("event is: " + doc.data().eventName)
-              this.events.push(doc.data())
-              })
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              this.events.push([doc.id, doc.data()])
           });
-      }
+        });
+        this.loading = false
+        console.log(this.events)
     },
   },
   created() {
-    this.fetchEvents();
-  },
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                this.uid = user.uid
+            }  
+        });
+        this.fetchEvents() 
+    },
 };
 </script>
 
